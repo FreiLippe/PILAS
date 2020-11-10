@@ -1,209 +1,201 @@
 <!DOCTYPE html>
-<html lang="pt-br">
-  <head>
-    <!-- Meta tags Obrigatórias -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+<html lang="pt-br" ng-app="pilas" ng-controller="pilasController">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+<head>
+  <!-- Meta tags Obrigatórias -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <title>PILA$</title>
-  </head>
-  <body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="#">PILA$</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#conteudoNavbarSuportado" aria-controls="conteudoNavbarSuportado" aria-expanded="false" aria-label="Alterna navegação">
-          <span class="navbar-toggler-icon"></span>
-        </button>
-      
-        <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
-          <ul class="navbar-nav mr-auto">
-            <li class="nav-item active">
-              <a class="nav-link" href="#" data-toggle="modal" data-target="#modalCategoria">Categoria<span class="sr-only">(página atual)</span></a>
-            </li>
-            <li class="nav-item">
-              <a class="nav-link" href="#" data-toggle="modal" data-target="#modalNovoLancamento">Novo lançamento</a>
-            </li>
-          </ul>
-          <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="Pesquisar" aria-label="Pesquisar">
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css"
+    integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+
+  <title>PILA$</title>
+</head>
+
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+    <a class="navbar-brand" href="#">PILA$</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#conteudoNavbarSuportado"
+      aria-controls="conteudoNavbarSuportado" aria-expanded="false" aria-label="Alterna navegação">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="conteudoNavbarSuportado">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item active">
+          <a class="nav-link" href="#" data-toggle="modal" data-target="#modalCategoria">Categoria<span
+              class="sr-only">(página atual)</span></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="#" data-toggle="modal" data-target="#modalNovoLancamento">Novo lançamento</a>
+        </li>
+      </ul>
+      <form class="form-inline my-2 my-lg-0">
+        <input class="form-control mr-sm-2" type="search" ng-model="pesquisar" placeholder="Pesquisar" aria-label="Pesquisar">
+      </form>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="jumbotron">
+      <h1 class="display-4">PILA$</h1>
+      <p class="lead">Nesta aplicação web você podera gerenciar todos os seus pilas!</p>
+      <hr class="my-4">
+      <p>Registre aqui todos os pilas que você ganha e todos os pilas que você gasta, separe em quantas categorias
+        quiser.</p>
+    </div>
+
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col"></th>
+          <th scope="col">Categoria</th>
+          <th scope="col">Data Hora</th>
+          <th scope="col">Descrição</th>
+          <th scope="col">Pilas</th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr ng-repeat="x in lancamentos | filter:pesquisar">
+          <th scope="row">{{x.tipo==0?"+":"-"}}</th>
+          <td>{{x.categoria}}</td>
+          <td>{{x.datahora}}</td>
+          <td>{{x.descricao}}</td>
+          <td>P{{x.valor | currency}}</td>
+          <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAlterar" ng-click="carregarLancamento(x)">Alterar</button></td>
+          <td><button type="button" class="btn btn-danger" ng-click="excluirLancamento(x)">Excluir</button></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-bottom">
+    <span>Todos os direitos são reservados</span>
+  </nav>
+
+  <!-- modalAlterar -->
+  <div class="modal fade" id="modalAlterar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Alterar Lançamento</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="descricao">Descrição</label>
+              <input type="text" class="form-control" id="descricao" placeholder="Digite a descrição do lançamento" ng-model="lancamentoAlterado.descricao">
+            </div>
+            <div class="form-group">
+              <label for="pilas">Pilas</label>
+              <input type="text" class="form-control" id="pilas" placeholder="Quantos pilas" ng-model="lancamentoAlterado.valor">
+            </div>
           </form>
         </div>
-      </nav>
-
-      <div class="container">
-        <div class="jumbotron">
-            <h1 class="display-4">PILA$</h1>
-            <p class="lead">Nesta aplicação web você podera gerenciar todos os seus pilas!</p>
-            <hr class="my-4">
-            <p>Registre aqui todos os pilas que você ganha e todos os pilas que você gasta, separe em quantas categorias quiser.</p>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" ng-click="alterarLancamento()">Salvar</button>
         </div>
-
-        <table class="table table-hover">
-            <thead>
-              <tr>
-                <th scope="col"></th>
-                <th scope="col">Categoria</th>
-                <th scope="col">Data Hora</th>
-                <th scope="col">Descrição</th>
-                <th scope="col">Pilas</th>
-                <th scope="col"></th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <th scope="row">+</th>
-                <td>Salário</td>
-                <td>06/09/2020 16:35:00</td>
-                <td>Folha de agosto</td>
-                <td>5.416,32</td>
-                <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAlterar">Alterar</button></td>
-                <td><button type="button" class="btn btn-danger" onclick="confirma()">Excluir</button></td>
-              </tr>
-              <tr>
-                <th scope="row">-</th>
-                <td>Educação</td>
-                <td>10/09/2020 08:45:00</td>
-                <td>Mensalidade de setembro</td>
-                <td>580,00</td>
-                <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAlterar">Alterar</button></td>
-                <td><button type="button" class="btn btn-danger" onclick="confirma()">Excluir</button></td>
-              </tr>
-              <tr>
-                <th scope="row">-</th>
-                <td>Combustível</td>
-                <td>12/09/2020 18:00:00</td>
-                <td>Gasolina Posto Alfa</td>
-                <td>150,00</td>
-                <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modalAlterar">Alterar</button></td>
-                <td><button type="button" class="btn btn-danger" onclick="confirma()">Excluir</button></td>
-              </tr>
-            </tbody>
-        </table>
       </div>
-
-      <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-bottom">
-          <span>Todos os direitos são reservados</span>
-      </nav>
-    
-    <!-- modalAlterar -->
-    <div class="modal fade" id="modalAlterar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Alterar Lançamento</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                </div>
-                <div class="modal-body">
-                    <form>
-                        <div class="form-group">
-                          <label for="descricao">Descrição</label>
-                          <input type="text" class="form-control" id="descricao" placeholder="Digite a descrição do lançamento">
-                        </div>
-                        <div class="form-group">
-                          <label for="pilas">Pilas</label>
-                          <input type="number" class="form-control" id="pilas" placeholder="Quantos pilas">
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Salvar</button>
-                </div>
-            </div>
-        </div>
     </div>
+  </div>
 
-    <!-- modalCategoria -->
-    <div class="modal fade" id="modalCategoria" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Categorias</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-                </div>
-                <div class="modal-body">
-                    <form class="form-inline">
-                        <div class="form-group mx-sm-0 mb-2">
-                          <label for="novaCategoria" class="sr-only"></label>
-                          <input type="password" class="form-control" id="novaCategoria" placeholder="Digite o nome da categoria">
-                        </div>
-                        <button type="button" class="btn btn-primary mx-sm-2 mb-2">Adicionar</button>
-                      </form>
-                    <ul class="list-group">
-                        <li class="list-group-item">Alimentação</li>
-                        <li class="list-group-item">Combustível</li>
-                        <li class="list-group-item">Educação</li>
-                        <li class="list-group-item">Entretenimento</li>
-                        <li class="list-group-item">Salário</li>
-                      </ul>
-                </div>
-                <div class="modal-footer">
-                </div>
-            </div>
+  <!-- modalCategoria -->
+  <div class="modal fade" id="modalCategoria" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Categorias</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button>
         </div>
-    </div>
-
-    <!-- modalNovoLancamento -->
-    <div class="modal fade" id="modalNovoLancamento" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">Novo Lançamento</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
-                <span aria-hidden="true">&times;</span>
+        <div class="modal-body">
+          <form class="form-inline">
+            <div class="form-group mx-sm-0 mb-2">
+              <label for="novaCategoria" class="sr-only"></label>
+              <input ng-model="categoria" type="text" class="form-control" id="novaCategoria" placeholder="Digite o nome da categoria">
+            </div>
+            <button type="button" class="btn btn-primary mx-sm-2 mb-2" ng-click="inserirCategoria()">
+              Adicionar
             </button>
-            </div>
-            <div class="modal-body">
-                <form>
-                    <div class="form-group">
-                      <label for="categoria">Categoria</label>
-                      <select class="form-control" id="categoria">
-                        <option>Alimentação</option>
-                        <option>Combustível</option>
-                        <option>Educação</option>
-                        <option>Entretenimento</option>
-                        <option>Salário</option>
-                      </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="tipo">Tipo</label>
-                        <select class="form-control" id="tipo">
-                          <option>Ganhei pilas</option>
-                          <option>Gastei pilas</option>
-                        </select>
-                      </div>
-                    <div class="form-group">
-                      <label for="descricaoNovo">Descrição</label>
-                      <input type="text" class="form-control" id="descricaoNovo" placeholder="Digite a descrição do lançamento">
-                    </div>
-                    <div class="form-group">
-                        <label for="pilasNovo">Pilas</label>
-                        <input type="number" class="form-control" id="pilasNovo" placeholder="Quantos pilas">
-                      </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-            <button type="button" class="btn btn-primary">Salvar</button>
-            </div>
+          </form>
+          <ul class="list-group">
+            <li class="list-group-item" ng-repeat="x in categorias">
+              {{x.categoria}}
+            </li>
+          </ul>
         </div>
+        <div class="modal-footer">
         </div>
+      </div>
     </div>
+  </div>
 
-    <!-- JavaScript (Opcional) -->
-    <!-- jQuery primeiro, depois Popper.js, depois Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+  <!-- modalNovoLancamento -->
+  <div class="modal fade" id="modalNovoLancamento" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Novo Lançamento</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Fechar">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form>
+            <div class="form-group">
+              <label for="categoria">Categoria</label>
+              <select class="form-control" id="categoria" ng-model="lancamento.idcategoria">
+                <option ng-repeat="x in categorias" value="{{x.idcategoria}}">
+                  {{x.categoria}}
+                </option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="tipo">Tipo</label>
+              <select class="form-control" id="tipo" ng-model="lancamento.tipo">
+                <option value="0">Ganhei pilas</option>
+                <option value="1">Gastei pilas</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="descricaoNovo">Descrição</label>
+              <input type="text" class="form-control" id="descricaoNovo" placeholder="Digite a descrição do lançamento" ng-model="lancamento.descricao">
+            </div>
+            <div class="form-group">
+              <label for="pilasNovo">Pilas</label>
+              <input type="number" class="form-control" id="pilasNovo" placeholder="Quantos pilas" ng-model="lancamento.valor">
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-primary" ng-click="inserirLancamento()">Salvar</button>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <script>
-        function confirma(){
-            confirm("Deseja excluir este lançamento agora?")
-        }
-    </script>
-  </body>
+  <!-- JavaScript (Opcional) -->
+  <!-- jQuery primeiro, depois Popper.js, depois Bootstrap JS -->
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+    integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"
+    integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"
+    integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy"
+    crossorigin="anonymous"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.7/angular.min.js"></script>
+  <script src="app.js"></script>
+</body>
+
 </html>
