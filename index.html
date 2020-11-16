@@ -60,7 +60,7 @@
       <tbody>
         <tr ng-repeat="x in lancamentos | filter:pesquisar">
           <th scope="row">{{x.tipo==0?"+":"-"}}</th>
-          <td>{{x.categoria}}</td>
+          <td>{{x.categoria.categoria}}</td>
           <td>{{x.datahora}}</td>
           <td>{{x.descricao}}</td>
           <td>P{{x.valor | currency}}</td>
@@ -154,7 +154,7 @@
             <div class="form-group">
               <label for="categoria">Categoria</label>
               <select class="form-control" id="categoria" ng-model="lancamento.idcategoria">
-                <option ng-repeat="x in categorias" value="{{x.idcategoria}}">
+                <option ng-repeat="x in categorias" value="{{x.id}}">
                   {{x.categoria}}
                 </option>
               </select>

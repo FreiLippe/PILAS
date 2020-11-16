@@ -13,6 +13,7 @@ function pilasController($scope, $http) {
     $scope.categoria = '';
 
     $scope.lancamento = {
+        idlancamento: 0,
         idcategoria: 0,
         tipo: 0,
         descricao: '',
@@ -24,7 +25,7 @@ function pilasController($scope, $http) {
     /* Declarando funções do controller */
     $scope.listarLancamentos = function () {
         $http
-            .get('back/lancamento_listar.php')
+            .get('http://localhost/pilas/backSymfony/public/lancamento-listar')
             .error(function () {
                 alert('Falha de comunicacao com o back-end.');
             })
@@ -36,7 +37,7 @@ function pilasController($scope, $http) {
 
     $scope.listarCategorias = function () {
         $http
-            .get('back/categoria_listar.php')
+            .get('http://localhost/pilas/backSymfony/public/categoria-listar')
             .error(function () {
                 alert('Falha ao comunicar com o back-end.');
             })
@@ -48,7 +49,7 @@ function pilasController($scope, $http) {
 
     $scope.inserirCategoria = function () {
         $http
-            .get('back/categoria_inserir.php?categoria=' + $scope.categoria)
+            .post('http://localhost/pilas/backSymfony/public/categoria-inserir', { 'categoria': $scope.categoria})
             .error(function () {
                 alert('Falha de comunicacao com o back-end ao inserir categoria.');
             })
@@ -65,16 +66,19 @@ function pilasController($scope, $http) {
 
     $scope.inserirLancamento = function () {
 
-        $scope.url = 'back/lancamento_inserir.php?idcategoria=:idcategoria&tipo=:tipo&descricao=:descricao&valor=:valor';
-        $scope.url = $scope.url.replace(':idcategoria', $scope.lancamento.idcategoria);
-        $scope.url = $scope.url.replace(':tipo', $scope.lancamento.tipo);
-        $scope.url = $scope.url.replace(':descricao', $scope.lancamento.descricao);
-        $scope.url = $scope.url.replace(':valor', $scope.lancamento.valor);
+        let obj = {
+            idcategoria: $scope.lancamento.idcategoria,
+            tipo: $scope.lancamento.tipo,
+            descricao: $scope.lancamento.descricao,
+            valor: $scope.lancamento.valor
+        }
 
         console.log($scope.url);
 
+        console.log(obj);
+
         $http
-            .get($scope.url)
+            .post('http://localhost/pilas/backSymfony/public/lancamento-inserir', obj)
             .error(function () {
                 alert('Falha de comunicao com o back-end ao inserir um lancamento.');
             })
@@ -91,19 +95,24 @@ function pilasController($scope, $http) {
 
     $scope.alterarLancamento = function () {
 
-        $scope.url = 'back/lancamento_alterar.php?idlancamento=:idlancamento&descricao=:descricao&valor=:valor';
-        $scope.url = $scope.url.replace(':idlancamento', $scope.lancamentoAlterado.idlancamento);
-        $scope.url = $scope.url.replace(':descricao', $scope.lancamentoAlterado.descricao);
-        $scope.url = $scope.url.replace(':valor', $scope.lancamentoAlterado.valor);
+        let obj = {
+            idcategoria: $scope.lancamentoAlterado.categoria.id,
+            tipo: $scope.lancamentoAlterado.tipo,
+            descricao: $scope.lancamentoAlterado.descricao,
+            valor: $scope.lancamentoAlterado.valor
+        }
 
         console.log($scope.url);
 
+        console.log($scope.lancamentoAlterado);
+
         $http
-            .get($scope.url)
+            .put('http://localhost/pilas/backSymfony/public/lancamento-atualiza/' + $scope.lancamentoAlterado.id, obj)
             .error(function () {
                 alert('Falha de comunicao com o back-end ao alterar um lancamento.');
             })
             .success(function (retorno) {
+                console.log(retorno);
                 if (retorno == 0) {
                     alert('Nao foi possivel alterar o lancamento.');
                 }
@@ -123,18 +132,13 @@ function pilasController($scope, $http) {
             return;
 
         $http
-            .get('back/lancamento_excluir.php?idlancamento=' + objeto.idlancamento)
+            .delete('http://localhost/pilas/backSymfony/public/lancamento-deleta/' + objeto.id)
             .error(function () {
                 alert('Falha de comunicacao com o back-end ao excluir um lancamento.');
             })
             .success(function (retorno) {
-                if (retorno == 0) {
-                    alert('Nao foi possivel excluir o lancamento.');
-                }
-                else {
-                    alert('Lancamento excluido com sucesso.');
-                    $scope.listarLancamentos();
-                }
+                alert('Lancamento excluido com sucesso.');
+                $scope.listarLancamentos();
             });
 
     }
